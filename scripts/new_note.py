@@ -58,8 +58,12 @@ def render(template: str, slug: str, title: str, num: int, ch_title: str) -> str
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--book", required=True, help="book directory slug, e.g. 04-ai-engineering-huyen")
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    ap.add_argument(
+        "--book", required=True, help="book directory slug, e.g. 04-ai-engineering-huyen"
+    )
     ap.add_argument("--chapter", type=int, help="chapter number")
     ap.add_argument("--all", action="store_true", help="scaffold every missing chapter")
     ap.add_argument("--force", action="store_true", help="overwrite an existing note")

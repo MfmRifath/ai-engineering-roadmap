@@ -183,7 +183,9 @@ def chapters(entries: list[str], pattern: re.Pattern[str]) -> list[tuple[int, st
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("--verify", action="store_true", help="exit non-zero if chapter counts drift")
     ap.add_argument("--write", action="store_true", help="write books/_toc/<slug>.txt")
     ap.add_argument("--full", action="store_true", help="print every outline entry")

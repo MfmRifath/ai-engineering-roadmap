@@ -64,7 +64,9 @@ def cards_in(path: Path) -> list[tuple[str, str]]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("--book", help="only harvest one book directory (its slug)")
     args = ap.parse_args(argv)
 

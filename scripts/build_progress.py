@@ -106,10 +106,8 @@ def summary_table(phases: list[Phase]) -> str:
 
 
 def progress_page(phases: list[Phase]) -> str:
-    done = sum(p.done for p in phases)
-    total = sum(p.total for p in phases)
-    pct = 100.0 * done / total if total else 0.0
-
+    # The header totals come from summary_table(); this function only adds the
+    # per-phase breakdown beneath it.
     out = [
         "# Progress",
         "",
@@ -140,7 +138,9 @@ def splice_readme(readme_text: str, block: str) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("--check", action="store_true", help="exit 1 if outputs are out of date")
     args = ap.parse_args(argv)
 
@@ -180,7 +180,9 @@ def main(argv: list[str] | None = None) -> int:
 
     done = sum(p.done for p in phases)
     total = sum(p.total for p in phases)
-    print(f"Progress: {done}/{total} chapters across {len(phases)} phases -> PROGRESS.md, README.md")
+    print(
+        f"Progress: {done}/{total} chapters across {len(phases)} phases -> PROGRESS.md, README.md"
+    )
     return 0
 
 
