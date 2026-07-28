@@ -1,0 +1,128 @@
+# ---------------------------------------------------------------------------
+# Books / source material — NEVER commit these.
+# The PDFs are in-copyright O'Reilly & Manning titles. They live in library/
+# on your machine only. See books/MANIFEST.md for official purchase links.
+# ---------------------------------------------------------------------------
+library/
+*.pdf
+*.epub
+*.mobi
+*.azw3
+*.djvu
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.conda/
+
+# Testing / linting caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# ---------------------------------------------------------------------------
+# Notebooks
+# ---------------------------------------------------------------------------
+.ipynb_checkpoints/
+
+# ---------------------------------------------------------------------------
+# Data, models, checkpoints — regenerate these, don't version them
+# ---------------------------------------------------------------------------
+data/
+datasets/
+models/
+checkpoints/
+runs/
+outputs/
+artifacts/
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.gguf
+*.onnx
+*.h5
+*.hdf5
+*.joblib
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.parquet
+*.faiss
+*.index
+.chroma/
+chroma_db/
+.lancedb/
+
+# Hugging Face / torch caches accidentally created in-tree
+.cache/
+hf_cache/
+transformers_cache/
+
+# ---------------------------------------------------------------------------
+# Secrets — API keys for OpenAI/Anthropic/HF etc. live here, never in git
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.toml
+credentials.json
+
+# ---------------------------------------------------------------------------
+# Experiment tracking
+# ---------------------------------------------------------------------------
+wandb/
+mlruns/
+mlflow/
+lightning_logs/
+tensorboard/
+tb_logs/
+
+# ---------------------------------------------------------------------------
+# Editors / OS
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini

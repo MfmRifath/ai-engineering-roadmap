@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e ".[dev]"
+      - name: ruff check
+        run: ruff check .
+      - name: ruff format --check
+        run: ruff format --check .
+
+  test:
+    name: Test (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - name: Install package + CPU torch
+        run: |
+          pip install -e ".[dev,classic]"
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Run tests
+        run: pytest -q -m "not slow and not network"
+
+  guard:
+    name: No book files committed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail if any book file is tracked
+        run: |
+          echo "Scanning the index for book files..."
+          if git ls-files | grep -Ei '\.(pdf|epub|mobi|azw3|djvu)$'; then
+            echo "::error::A book file is tracked by git. These must stay in library/ (gitignored)."
+            exit 1
+          fi
+          echo "Clean — no book files tracked."
+      - name: Fail if the repo is getting heavy
+        run: |
+          size_kb=$(git count-objects -v | awk '/^size-pack:/ {print $2}')
+          echo "Pack size: ${size_kb} KB"
+          if [ "${size_kb:-0}" -gt 51200 ]; then
+            echo "::error::Repo pack exceeds 50 MB — something large slipped in."
+            exit 1
+          fi
+
+  progress:
+    name: Progress files current
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check PROGRESS.md matches ROADMAP.md
+        run: python scripts/build_progress.py --check

@@ -1,0 +1,37 @@
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+(CC BY-NC-SA 4.0)
+
+Copyright (c) 2026 Rifath (MfmRifath)
+
+The written study notes in this repository — everything under books/,
+cheatsheets/, and resources/ — are licensed under CC BY-NC-SA 4.0.
+
+You are free to:
+  * Share  — copy and redistribute the material in any medium or format
+  * Adapt  — remix, transform, and build upon the material
+
+Under the following terms:
+  * Attribution   — You must give appropriate credit and link to this repo.
+  * NonCommercial — You may not use the material for commercial purposes.
+  * ShareAlike    — Distribute contributions under the same license.
+
+Full text: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+
+---
+
+IMPORTANT — WHAT THIS DOES *NOT* COVER
+
+These notes are original summaries written while studying five copyrighted
+books. They paraphrase and synthesize ideas; they do not reproduce the books'
+text, figures, or code listings.
+
+The books remain the copyright of their authors and publishers:
+
+  * Aurelien Geron / O'Reilly Media
+  * Jay Alammar, Maarten Grootendorst / O'Reilly Media
+  * Sebastian Raschka / Manning Publications
+  * Chip Huyen / O'Reilly Media
+  * Michael Lanham / Manning Publications
+
+Nothing in this license grants any right to the underlying books. Buy them —
+see books/MANIFEST.md. This repository intentionally contains no book files.

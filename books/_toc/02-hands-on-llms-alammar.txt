@@ -1,0 +1,16 @@
+# Hands-On Large Language Models
+# Extracted from the PDF outline by scripts/extract_toc.py
+# Do not edit by hand — run `make toc`.
+
+ 1. An Introduction to Large Language Models
+ 2. Tokens and Embeddings
+ 3. Looking Inside Large Language Models
+ 4. Text Classification
+ 5. Text Clustering and Topic Modeling
+ 6. Prompt Engineering
+ 7. Advanced Text Generation Techniques and Tools
+ 8. Semantic Search and Retrieval-Augmented Generation
+ 9. Multimodal Large Language Models
+10. Creating Text Embedding Models
+11. Fine-Tuning Representation Models for Classification
+12. Fine-Tuning Generation Models

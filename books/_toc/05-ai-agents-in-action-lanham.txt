@@ -1,0 +1,15 @@
+# AI Agents in Action
+# Extracted from the PDF outline by scripts/extract_toc.py
+# Do not edit by hand — run `make toc`.
+
+ 1. Introduction to agents and their world
+ 2. Harnessing the power of large language models
+ 3. Engaging GPT assistants
+ 4. Exploring multi-agent systems
+ 5. Empowering agents with actions
+ 6. Building autonomous assistants
+ 7. Assembling and using an agent platform
+ 8. Understanding agent memory and knowledge
+ 9. Mastering agent prompts with prompt flow
+10. Agent reasoning and evaluation
+11. Agent planning and feedback

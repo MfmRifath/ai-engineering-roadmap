@@ -1,0 +1,11 @@
+# Build a Large Language Model (From Scratch)
+# Extracted from the PDF outline by scripts/extract_toc.py
+# Do not edit by hand — run `make toc`.
+
+ 1. Understanding large language models
+ 2. Working with text data
+ 3. Coding attention mechanisms
+ 4. Implementing a GPT model from scratch to generate text
+ 5. Pretraining on unlabeled data
+ 6. Fine-tuning for classification
+ 7. Fine-tuning to follow instructions
