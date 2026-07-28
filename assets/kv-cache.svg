@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 330" width="780" height="330" role="img" aria-labelledby="kvt kvd">
+  <title id="kvt">Why the KV cache works</title>
+  <desc id="kvd">Two rows of four token cells animate over four generation steps. Without a cache, every previous token's keys and values are recomputed at each step, so the work grows 1, 2, 3, 4. With a cache, only the newest token is computed, so the work stays at 1 — because the keys and values of earlier tokens depend only on tokens already fixed, and therefore never change.</desc>
+
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .fg  { fill: #24292f; }
+    .mut { fill: #57606a; }
+    .cell-base { fill: #57606a; }
+    @media (prefers-color-scheme: dark) {
+      .fg  { fill: #e6edf3; }
+      .mut { fill: #8b949e; }
+      .cell-base { fill: #8b949e; }
+    }
+    .t    { font-size: 15px; font-weight: 600; }
+    .st   { font-size: 11.5px; }
+    .lbl  { font-size: 12.5px; font-weight: 600; }
+    .tick { font-size: 11px; }
+    .cellnum { font-size: 12px; font-weight: 600; fill: #ffffff; }
+
+    /* One loop = 8s, four generation steps of 25% each. */
+    .on1,.on2,.on3,.on4,.c1,.c2,.c3,.c4,.b1,.b2,.b3,.b4,
+    .s1,.s2,.s3,.s4 { animation-duration: 8s; animation-iteration-count: infinite; }
+
+    /* "on" — lit from its own step onward. Used for the recompute row, so at
+       step k every cell 1..k is lit and the work visibly grows. */
+    .on1 { animation-name: on1; } .on2 { animation-name: on2; }
+    .on3 { animation-name: on3; } .on4 { animation-name: on4; }
+    @keyframes on1 { 0%{opacity:0} 1%{opacity:1} 100%{opacity:1} }
+    @keyframes on2 { 0%,25%{opacity:0} 26%{opacity:1} 100%{opacity:1} }
+    @keyframes on3 { 0%,50%{opacity:0} 51%{opacity:1} 100%{opacity:1} }
+    @keyframes on4 { 0%,75%{opacity:0} 76%{opacity:1} 100%{opacity:1} }
+
+    /* "c" — lit during its own step only. The cached row: work stays at 1. */
+    .c1 { animation-name: c1; } .c2 { animation-name: c2; }
+    .c3 { animation-name: c3; } .c4 { animation-name: c4; }
+    @keyframes c1 { 0%{opacity:1} 23%{opacity:1} 24%{opacity:0} 100%{opacity:0} }
+    @keyframes c2 { 0%,25%{opacity:0} 26%{opacity:1} 48%{opacity:1} 49%{opacity:0} 100%{opacity:0} }
+    @keyframes c3 { 0%,50%{opacity:0} 51%{opacity:1} 73%{opacity:1} 74%{opacity:0} 100%{opacity:0} }
+    @keyframes c4 { 0%,75%{opacity:0} 76%{opacity:1} 98%{opacity:1} 99%{opacity:0} 100%{opacity:0} }
+
+    /* "b" — the muted "already cached, untouched" state. */
+    .b1 { animation-name: b1; } .b2 { animation-name: b2; }
+    .b3 { animation-name: b3; } .b4 { animation-name: b4; }
+    @keyframes b1 { 0%{opacity:0} 1%{opacity:.30} 100%{opacity:.30} }
+    @keyframes b2 { 0%,25%{opacity:0} 26%{opacity:.30} 100%{opacity:.30} }
+    @keyframes b3 { 0%,50%{opacity:0} 51%{opacity:.30} 100%{opacity:.30} }
+    @keyframes b4 { 0%,75%{opacity:0} 76%{opacity:.30} 100%{opacity:.30} }
+
+    /* "s" — step captions, visible only during their own step. */
+    .s1 { animation-name: s1; } .s2 { animation-name: s2; }
+    .s3 { animation-name: s3; } .s4 { animation-name: s4; }
+    @keyframes s1 { 0%{opacity:1} 24%{opacity:1} 25%{opacity:0} 100%{opacity:0} }
+    @keyframes s2 { 0%,25%{opacity:0} 26%{opacity:1} 49%{opacity:1} 50%{opacity:0} 100%{opacity:0} }
+    @keyframes s3 { 0%,50%{opacity:0} 51%{opacity:1} 74%{opacity:1} 75%{opacity:0} 100%{opacity:0} }
+    @keyframes s4 { 0%,75%{opacity:0} 76%{opacity:1} 99%{opacity:1} 100%{opacity:0} }
+
+    @media (prefers-reduced-motion: reduce) {
+      .on1,.on2,.on3,.on4,.b1,.b2,.b3,.b4 { animation: none; opacity: 1; }
+      .c1,.c2,.c3,.c4 { animation: none; opacity: 0; }
+      .c4 { opacity: 1; }
+      .s1,.s2,.s3 { animation: none; opacity: 0; }
+      .s4 { animation: none; opacity: 1; }
+    }
+  </style>
+
+  <text x="24" y="28" class="t fg">The KV cache — why it is valid, and what it saves</text>
+  <text x="24" y="48" class="st mut">Keys and values for earlier positions depend only on tokens already fixed, so they never change. Recomputing them is pure waste.</text>
+
+  <!-- ── Row 1: no cache ─────────────────────────────────────────────── -->
+  <text x="24" y="102" class="lbl fg">Without a KV cache</text>
+  <text x="24" y="120" class="tick mut">recompute everything</text>
+
+  <rect x="230" y="80" width="52" height="52" rx="6" fill="#f43f5e" class="on1"/>
+  <rect x="292" y="80" width="52" height="52" rx="6" fill="#f43f5e" class="on2"/>
+  <rect x="354" y="80" width="52" height="52" rx="6" fill="#f43f5e" class="on3"/>
+  <rect x="416" y="80" width="52" height="52" rx="6" fill="#f43f5e" class="on4"/>
+
+  <text x="500" y="100" class="tick mut">work this step:</text>
+  <text x="500" y="120" class="lbl s1" fill="#f43f5e">1 token computed</text>
+  <text x="500" y="120" class="lbl s2" fill="#f43f5e">2 tokens recomputed</text>
+  <text x="500" y="120" class="lbl s3" fill="#f43f5e">3 tokens recomputed</text>
+  <text x="500" y="120" class="lbl s4" fill="#f43f5e">4 tokens recomputed</text>
+
+  <!-- ── Row 2: with cache ───────────────────────────────────────────── -->
+  <text x="24" y="212" class="lbl fg">With a KV cache</text>
+  <text x="24" y="230" class="tick mut">reuse, compute only the new token</text>
+
+  <rect x="230" y="190" width="52" height="52" rx="6" class="cell-base b1"/>
+  <rect x="230" y="190" width="52" height="52" rx="6" fill="#14b8a6" class="c1"/>
+  <rect x="292" y="190" width="52" height="52" rx="6" class="cell-base b2"/>
+  <rect x="292" y="190" width="52" height="52" rx="6" fill="#14b8a6" class="c2"/>
+  <rect x="354" y="190" width="52" height="52" rx="6" class="cell-base b3"/>
+  <rect x="354" y="190" width="52" height="52" rx="6" fill="#14b8a6" class="c3"/>
+  <rect x="416" y="190" width="52" height="52" rx="6" class="cell-base b4"/>
+  <rect x="416" y="190" width="52" height="52" rx="6" fill="#14b8a6" class="c4"/>
+
+  <text x="500" y="210" class="tick mut">work this step:</text>
+  <text x="500" y="230" class="lbl" fill="#14b8a6">always 1 token</text>
+
+  <!-- token ruler -->
+  <text x="256" y="268" class="tick mut" text-anchor="middle">tok 1</text>
+  <text x="318" y="268" class="tick mut" text-anchor="middle">tok 2</text>
+  <text x="380" y="268" class="tick mut" text-anchor="middle">tok 3</text>
+  <text x="442" y="268" class="tick mut" text-anchor="middle">tok 4</text>
+
+  <text x="24" y="300" class="st mut">Cost: the cache grows linearly with context and batch — at 8k context and batch 32 it exceeds the model weights,</text>
+  <text x="24" y="316" class="st mut">which is why it, not the parameter count, usually limits how many requests you can serve concurrently.</text>
+</svg>

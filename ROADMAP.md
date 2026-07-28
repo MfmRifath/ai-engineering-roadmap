@@ -13,21 +13,54 @@ themselves.
 
 ## How the phases fit together
 
-```
-Phase 1  ML Foundations            ──┐
-Phase 2  Deep Learning             ──┼─→ you can train and evaluate a model
-Phase 3  Sequences & Attention     ──┘
-                 │
-Phase 4  LLM Intuition             ──┐
-Phase 5  Transformers From Scratch ──┼─→ you understand what an LLM is doing
-Phase 6  Fine-Tuning               ──┘
-                 │
-Phase 7  Production AI Engineering ──┐
-Phase 8  Agents                    ──┴─→ you can ship and operate one
+```mermaid
+flowchart TD
+    P1["<b>Phase 1</b> · ML Foundations<br/><small>Géron 1–9</small>"]
+    P2["<b>Phase 2</b> · Deep Learning<br/><small>Géron 10–15, 19</small>"]
+    P3["<b>Phase 3</b> · Sequences &amp; Attention<br/><small>Géron 16–18</small>"]
+    G1{{"you can train and evaluate a model"}}
+
+    P4["<b>Phase 4</b> · LLM Intuition<br/><small>Alammar 1–9</small>"]
+    P5["<b>Phase 5</b> · Transformers From Scratch<br/><small>Raschka 1–7</small>"]
+    P6["<b>Phase 6</b> · Fine-Tuning<br/><small>Alammar 10–12 · Huyen 7–8</small>"]
+    G2{{"you understand what an LLM is doing"}}
+
+    P7["<b>Phase 7</b> · Production AI Engineering<br/><small>Huyen 1–6, 9–10</small>"]
+    P8["<b>Phase 8</b> · Agents<br/><small>Lanham 1–11</small>"]
+    G3{{"you can ship and operate one"}}
+
+    P1 --> P2 --> P3 --> G1
+    G1 --> P4 --> P5 --> P6 --> G2
+    G2 --> P7 --> P8 --> G3
+
+    classDef found fill:#3b82f6,stroke:#3b82f6,color:#fff,stroke-width:0px
+    classDef llm   fill:#a855f7,stroke:#a855f7,color:#fff,stroke-width:0px
+    classDef prod  fill:#14b8a6,stroke:#14b8a6,color:#fff,stroke-width:0px
+    classDef gate  fill:none,stroke:#f59e0b,stroke-width:1.5px,stroke-dasharray:4 3
+
+    class P1,P2,P3 found
+    class P4,P5,P6 llm
+    class P7,P8 prod
+    class G1,G2,G3 gate
 ```
 
-Phases 1–3 are the tax you pay once. Phases 4–6 are the interesting part. Phases 7–8 are what
-people will actually pay you for.
+Phases 1–3 are the tax you pay once. Phases 4–6 are the interesting part. Phases 7–8 are
+what people will actually pay you for.
+
+### Where the effort goes
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'pie1':'#3b82f6','pie2':'#3b82f6','pie3':'#3b82f6','pie4':'#a855f7','pie5':'#a855f7','pie6':'#a855f7','pie7':'#14b8a6','pie8':'#14b8a6'}}}%%
+pie showData
+    "P1 ML Foundations" : 9
+    "P2 Deep Learning" : 7
+    "P3 Sequences" : 3
+    "P4 LLM Intuition" : 9
+    "P5 From Scratch" : 7
+    "P6 Fine-Tuning" : 5
+    "P7 Production" : 8
+    "P8 Agents" : 11
+```
 
 ---
 

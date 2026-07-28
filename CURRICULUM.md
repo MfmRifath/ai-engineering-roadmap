@@ -170,6 +170,28 @@ end to end and hoping they connect.
 
 Pick a concept, walk the spiral. Each pass adds a layer the previous one could not.
 
+```mermaid
+flowchart LR
+    subgraph attention ["Spiral · Attention"]
+        direction LR
+        A1["<b>G16</b><br/>feel the problem<br/><small>watch an RNN forget</small>"]
+        A2["<b>A3</b><br/>see the solution<br/><small>Q, K, V made visual</small>"]
+        A3["<b>R3</b><br/>build it<br/><small>~200 lines, four versions</small>"]
+        A4["<b>H9</b><br/>operate it<br/><small>KV cache, GQA, Flash</small>"]
+        A1 --> A2 --> A3 --> A4
+    end
+
+    classDef intu fill:#3b82f6,stroke:#3b82f6,color:#fff,stroke-width:0px
+    classDef bld  fill:#a855f7,stroke:#a855f7,color:#fff,stroke-width:0px
+    classDef ops  fill:#14b8a6,stroke:#14b8a6,color:#fff,stroke-width:0px
+    class A1,A2 intu
+    class A3 bld
+    class A4 ops
+```
+
+The shape is always the same — **intuition → implementation → production** — and it is the
+whole reason to read five overlapping books instead of one.
+
 ### Spiral: Attention
 1. **G16** — feel the problem. Watch an RNN lose the beginning of a long sentence.
 2. **A3** — see the solution. Alammar's diagrams; do not move on until Q, K, V feel obvious.

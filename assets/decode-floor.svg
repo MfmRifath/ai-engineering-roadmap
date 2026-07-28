@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" width="760" height="320" role="img" aria-labelledby="t d">
+  <title id="t">Decode speed floor set by memory bandwidth</title>
+  <desc id="d">Milliseconds per output token for several model sizes and precisions at 2 TB/s of memory bandwidth.</desc>
+
+  <style>
+    .fg   { fill: #24292f; }
+    .mut  { fill: #57606a; }
+    .axis { stroke: #d0d7de; stroke-width: 1; }
+    .grid { stroke: #d0d7de; stroke-width: 1; stroke-dasharray: 3 3; opacity: .6; }
+    .rule { stroke: #f43f5e; stroke-width: 1.5; stroke-dasharray: 5 3; }
+    @media (prefers-color-scheme: dark) {
+      .fg   { fill: #e6edf3; }
+      .mut  { fill: #8b949e; }
+      .axis { stroke: #30363d; }
+      .grid { stroke: #30363d; }
+    }
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .t   { font-size: 15px; font-weight: 600; }
+    .st  { font-size: 11.5px; }
+    .lbl { font-size: 12px; }
+    .val { font-size: 12px; font-weight: 600; }
+    .tick{ font-size: 10.5px; }
+
+    .bar { transform-origin: left center; animation: grow .9s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    .ln { stroke-dasharray: 1200; stroke-dashoffset: 1200;
+          animation: draw 1.6s ease-out forwards; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+
+    .fade { opacity: 0; animation: fade .5s ease-out forwards; }
+    @keyframes fade { to { opacity: 1; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bar, .ln, .fade { animation: none; opacity: 1;
+                         stroke-dashoffset: 0; transform: none; }
+    }
+  </style>
+  <text x="24.0" y="30.0" class="t fg" text-anchor="start">Decode floor — ms per output token</text>
+  <text x="24.0" y="50.0" class="st mut" text-anchor="start">Every weight must be read from memory for each token generated. At 2 TB/s this is a hard floor,</text>
+  <text x="24.0" y="66.0" class="st mut" text-anchor="start">which is why quantization speeds up decode: half the bytes, half the traffic.</text>
+  <text x="138.0" y="111.0" class="lbl fg" text-anchor="end">7B  int4</text>
+  <rect x="150" y="92" width="10.8" height="30" fill="#14b8a6" rx="2" class="bar" style="animation-delay:0.00s"/>
+  <text x="170.8" y="111.0" class="val fg fade" text-anchor="start" style="animation-delay:0.50s">1.75 ms   (571 tok/s)</text>
+  <text x="138.0" y="163.0" class="lbl fg" text-anchor="end">7B  int8</text>
+  <rect x="150" y="144" width="21.5" height="30" fill="#22c55e" rx="2" class="bar" style="animation-delay:0.08s"/>
+  <text x="181.5" y="163.0" class="val fg fade" text-anchor="start" style="animation-delay:0.58s">3.50 ms   (286 tok/s)</text>
+  <text x="138.0" y="215.0" class="lbl fg" text-anchor="end">7B  fp16</text>
+  <rect x="150" y="196" width="43.0" height="30" fill="#3b82f6" rx="2" class="bar" style="animation-delay:0.16s"/>
+  <text x="203.0" y="215.0" class="val fg fade" text-anchor="start" style="animation-delay:0.66s">7.00 ms   (143 tok/s)</text>
+  <text x="138.0" y="267.0" class="lbl fg" text-anchor="end">70B fp16</text>
+  <rect x="150" y="248" width="430.0" height="30" fill="#f43f5e" rx="2" class="bar" style="animation-delay:0.24s"/>
+  <text x="590.0" y="267.0" class="val fg fade" text-anchor="start" style="animation-delay:0.74s">70.00 ms   (14 tok/s)</text>
+  <text x="150.0" y="314.0" class="tick mut" text-anchor="start">Floor = (parameters x bytes per parameter) / memory bandwidth</text>
+  <text x="150.0" y="332.0" class="tick mut" text-anchor="start">Measured far above the floor? The problem is your serving stack, not your hardware.</text>
+</svg>

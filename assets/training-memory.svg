@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" width="760" height="300" role="img" aria-labelledby="t d">
+  <title id="t">Training memory for a 7B model</title>
+  <desc id="d">Stacked bars comparing full fine-tuning, LoRA and QLoRA memory. Adam optimizer state dominates full fine-tuning at 56 GB.</desc>
+
+  <style>
+    .fg   { fill: #24292f; }
+    .mut  { fill: #57606a; }
+    .axis { stroke: #d0d7de; stroke-width: 1; }
+    .grid { stroke: #d0d7de; stroke-width: 1; stroke-dasharray: 3 3; opacity: .6; }
+    .rule { stroke: #f43f5e; stroke-width: 1.5; stroke-dasharray: 5 3; }
+    @media (prefers-color-scheme: dark) {
+      .fg   { fill: #e6edf3; }
+      .mut  { fill: #8b949e; }
+      .axis { stroke: #30363d; }
+      .grid { stroke: #30363d; }
+    }
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .t   { font-size: 15px; font-weight: 600; }
+    .st  { font-size: 11.5px; }
+    .lbl { font-size: 12px; }
+    .val { font-size: 12px; font-weight: 600; }
+    .tick{ font-size: 10.5px; }
+
+    .bar { transform-origin: left center; animation: grow .9s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    .ln { stroke-dasharray: 1200; stroke-dashoffset: 1200;
+          animation: draw 1.6s ease-out forwards; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+
+    .fade { opacity: 0; animation: fade .5s ease-out forwards; }
+    @keyframes fade { to { opacity: 1; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bar, .ln, .fade { animation: none; opacity: 1;
+                         stroke-dashoffset: 0; transform: none; }
+    }
+  </style>
+  <text x="24.0" y="30.0" class="t fg" text-anchor="start">Training memory — 7B model</text>
+  <text x="24.0" y="50.0" class="st mut" text-anchor="start">Adam keeps two fp32 moments per trainable parameter. That is the whole reason PEFT works.</text>
+  <line x1="281.4" y1="68" x2="281.4" y2="246" class="rule"/>
+  <text x="286.4" y="63.0" class="tick" text-anchor="start" fill="#f43f5e">16 GB card</text>
+  <text x="178.0" y="99.0" class="lbl fg" text-anchor="end">Full fine-tune</text>
+  <rect x="190.0" y="78" width="80.0" height="34" fill="#3b82f6" rx="2" class="bar" style="animation-delay:0.00s"/>
+  <rect x="270.0" y="78" width="80.0" height="34" fill="#a855f7" rx="2" class="bar" style="animation-delay:0.06s"/>
+  <rect x="350.0" y="78" width="320.0" height="34" fill="#f43f5e" rx="2" class="bar" style="animation-delay:0.12s"/>
+  <text x="678.0" y="99.0" class="val fg fade" text-anchor="start" style="animation-delay:0.90s">84 GB</text>
+  <text x="178.0" y="159.0" class="lbl fg" text-anchor="end">LoRA  (0.5% trainable)</text>
+  <rect x="190.0" y="138" width="80.0" height="34" fill="#3b82f6" rx="2" class="bar" style="animation-delay:0.10s"/>
+  <rect x="270.4" y="138" width="1.6" height="34" fill="#f43f5e" rx="2" class="bar" style="animation-delay:0.22s"/>
+  <text x="280.0" y="159.0" class="val fg fade" text-anchor="start" style="animation-delay:0.90s">14 GB</text>
+  <text x="178.0" y="219.0" class="lbl fg" text-anchor="end">QLoRA (nf4 + LoRA)</text>
+  <rect x="190.0" y="198" width="20.0" height="34" fill="#3b82f6" rx="2" class="bar" style="animation-delay:0.20s"/>
+  <rect x="210.4" y="198" width="1.6" height="34" fill="#f43f5e" rx="2" class="bar" style="animation-delay:0.32s"/>
+  <text x="220.0" y="219.0" class="val fg fade" text-anchor="start" style="animation-delay:0.90s">4 GB</text>
+  <rect x="190" y="262" width="11" height="11" fill="#3b82f6" rx="2"/>
+  <text x="207.0" y="272.0" class="tick mut" text-anchor="start">weights</text>
+  <rect x="260.8" y="262" width="11" height="11" fill="#a855f7" rx="2"/>
+  <text x="277.8" y="272.0" class="tick mut" text-anchor="start">gradients</text>
+  <rect x="344.4" y="262" width="11" height="11" fill="#f43f5e" rx="2"/>
+  <text x="361.4" y="272.0" class="tick mut" text-anchor="start">Adam states</text>
+</svg>

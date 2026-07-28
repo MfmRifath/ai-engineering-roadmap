@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 430" width="820" height="430" role="img" aria-labelledby="tft tfd">
+  <title id="tft">The decoder-only transformer forward pass</title>
+  <desc id="tfd">Token ids enter, are looked up in the embedding table and added to positional embeddings, then pass through N identical transformer blocks. Each block has two sublayers wrapped in pre-normalised residual connections: attention, which is the only place information moves between positions, and a feedforward network, which processes each position independently. A final layer norm and a linear head produce logits over the vocabulary. Only the last position's logits are used to sample the next token. A pulse animates along the residual stream to show the flow.</desc>
+
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .fg { fill: #24292f; } .mut { fill: #57606a; }
+    .stem { stroke: #57606a; }
+    .card { fill: #57606a; opacity: .08; }
+    @media (prefers-color-scheme: dark) {
+      .fg { fill: #e6edf3; } .mut { fill: #8b949e; }
+      .stem { stroke: #8b949e; }
+      .card { fill: #8b949e; opacity: .12; }
+    }
+    .t    { font-size: 15px; font-weight: 600; }
+    .st   { font-size: 11.5px; }
+    .node { font-size: 12.5px; font-weight: 600; }
+    .tick { font-size: 10.5px; }
+    .shape{ font-size: 10.5px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    .pulse { animation: flow 4s linear infinite; }
+    @keyframes flow { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
+
+    .glow { animation: glow 4s ease-in-out infinite; }
+    @keyframes glow { 0%,100% { opacity: .25 } 50% { opacity: .75 } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pulse, .glow { animation: none; }
+      .pulse { opacity: 0; }
+    }
+  </style>
+
+  <text x="24" y="28" class="t fg">Forward pass — tokens in, one token out</text>
+  <text x="24" y="48" class="st mut">The block does exactly two things: attention moves information <tspan font-weight="600">between</tspan> positions, the feedforward network processes <tspan font-weight="600">each position alone</tspan>.</text>
+
+  <!-- ══ the spine ══ -->
+  <line x1="200" y1="86" x2="200" y2="360" class="stem" stroke-width="2" stroke-dasharray="4 4" opacity=".5"/>
+
+  <!-- input -->
+  <rect x="96" y="78" width="208" height="34" rx="8" class="card"/>
+  <text x="200" y="100" class="node fg" text-anchor="middle">token ids</text>
+  <text x="320" y="100" class="shape mut">(B, T)</text>
+
+  <!-- embeddings -->
+  <rect x="96" y="126" width="208" height="46" rx="8" fill="#3b82f6" opacity=".18"/>
+  <text x="200" y="145" class="node fg" text-anchor="middle">token emb + positional emb</text>
+  <text x="200" y="163" class="tick mut" text-anchor="middle">a lookup table, learned like everything else</text>
+  <text x="320" y="152" class="shape mut">(B, T, C)</text>
+
+  <!-- ══ the block, expanded on the right ══ -->
+  <rect x="96" y="188" width="208" height="128" rx="10" fill="#a855f7" opacity=".14"/>
+  <rect x="96" y="188" width="208" height="128" rx="10" fill="none" stroke="#a855f7" stroke-width="1.5" opacity=".55"/>
+  <text x="200" y="212" class="node fg" text-anchor="middle">Transformer block</text>
+  <text x="200" y="230" class="tick mut" text-anchor="middle">× N layers  (GPT-2 small: N = 12)</text>
+  <text x="200" y="262" class="tick fg" text-anchor="middle">x = x + attn(norm(x))</text>
+  <text x="200" y="282" class="tick fg" text-anchor="middle">x = x + ffn(norm(x))</text>
+  <text x="200" y="304" class="tick mut" text-anchor="middle">shape-preserving — which is what lets you stack it</text>
+  <text x="320" y="252" class="shape mut">(B, T, C)</text>
+
+  <!-- callouts -->
+  <line x1="304" y1="262" x2="420" y2="240" class="stem" stroke-width="1" opacity=".45"/>
+  <rect x="424" y="218" width="330" height="44" rx="8" fill="#f43f5e" opacity=".12"/>
+  <text x="438" y="238" class="tick fg">attention — the ONLY cross-position operation</text>
+  <text x="438" y="254" class="tick mut">causal mask: position i attends to j ≤ i. Cost is O(T²).</text>
+
+  <line x1="304" y1="282" x2="420" y2="298" class="stem" stroke-width="1" opacity=".45"/>
+  <rect x="424" y="276" width="330" height="44" rx="8" fill="#14b8a6" opacity=".14"/>
+  <text x="438" y="296" class="tick fg">feedforward — each position independently</text>
+  <text x="438" y="312" class="tick mut">expands 4×; holds about ⅔ of non-embedding parameters.</text>
+
+  <!-- final norm + head -->
+  <rect x="96" y="330" width="208" height="34" rx="8" class="card"/>
+  <text x="200" y="352" class="node fg" text-anchor="middle">final norm → LM head</text>
+  <text x="320" y="352" class="shape mut">(B, T, V)</text>
+
+  <!-- output -->
+  <rect x="96" y="378" width="208" height="38" rx="8" fill="#22c55e" opacity=".18"/>
+  <text x="200" y="395" class="node fg" text-anchor="middle">softmax → sample</text>
+  <text x="200" y="411" class="tick mut" text-anchor="middle">uses logits[:, −1, :] only</text>
+
+  <!-- the "only last position" callout -->
+  <line x1="304" y1="396" x2="420" y2="386" class="stem" stroke-width="1" opacity=".45"/>
+  <rect x="424" y="366" width="330" height="42" rx="8" fill="#f59e0b" opacity=".14"/>
+  <text x="438" y="385" class="tick fg">every position is computed — only the last one predicts</text>
+  <text x="438" y="400" class="tick mut">the others exist to be attended to.</text>
+
+  <!-- residual stream label -->
+  <text x="60" y="248" class="tick mut" text-anchor="middle" transform="rotate(-90 60 248)">residual stream</text>
+  <line x1="80" y1="188" x2="80" y2="316" class="stem" stroke-width="2" opacity=".35"/>
+
+  <!-- animated pulse travelling the spine -->
+  <circle r="5" fill="#3b82f6" class="pulse glow" style="offset-path: path('M 200 86 L 200 360');"/>
+  <circle r="5" fill="#a855f7" class="pulse glow" style="offset-path: path('M 200 86 L 200 360'); animation-delay: -1.3s;"/>
+  <circle r="5" fill="#14b8a6" class="pulse glow" style="offset-path: path('M 200 86 L 200 360'); animation-delay: -2.6s;"/>
+</svg>

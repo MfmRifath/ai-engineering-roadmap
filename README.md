@@ -26,6 +26,27 @@ and, crucially, that **overlap**. Nearly every important idea appears in three o
 from different angles: Alammar draws it, Raschka makes you build it, Huyen tells you what breaks
 at scale, Géron gives you the statistical footing to know when you are fooling yourself.
 
+```mermaid
+flowchart LR
+    G["<b>Géron</b><br/>Hands-On ML<br/><small>19 chapters</small>"]
+    A["<b>Alammar</b><br/>Hands-On LLMs<br/><small>12 chapters</small>"]
+    R["<b>Raschka</b><br/>Build a LLM<br/><small>7 chapters</small>"]
+    H["<b>Huyen</b><br/>AI Engineering<br/><small>10 chapters</small>"]
+    L["<b>Lanham</b><br/>AI Agents<br/><small>11 chapters</small>"]
+
+    G -- "the discipline" --> A
+    A -- "see it" --> R
+    R -- "build it" --> H
+    H -- "ship it" --> L
+
+    classDef f fill:#3b82f6,stroke:#3b82f6,color:#fff,stroke-width:0px
+    classDef m fill:#a855f7,stroke:#a855f7,color:#fff,stroke-width:0px
+    classDef p fill:#14b8a6,stroke:#14b8a6,color:#fff,stroke-width:0px
+    class G f
+    class A,R m
+    class H,L p
+```
+
 The repo turns that overlap into a method:
 
 1. **[ROADMAP.md](ROADMAP.md)** — eight phases that interleave the books in learning order

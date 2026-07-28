@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" width="760" height="340" role="img" aria-labelledby="t d">
+  <title id="t">KV cache size versus model weights</title>
+  <desc id="d">KV cache memory for Llama-3-8B at several context lengths and batch sizes, compared with the 16 GB of fp16 weights.</desc>
+
+  <style>
+    .fg   { fill: #24292f; }
+    .mut  { fill: #57606a; }
+    .axis { stroke: #d0d7de; stroke-width: 1; }
+    .grid { stroke: #d0d7de; stroke-width: 1; stroke-dasharray: 3 3; opacity: .6; }
+    .rule { stroke: #f43f5e; stroke-width: 1.5; stroke-dasharray: 5 3; }
+    @media (prefers-color-scheme: dark) {
+      .fg   { fill: #e6edf3; }
+      .mut  { fill: #8b949e; }
+      .axis { stroke: #30363d; }
+      .grid { stroke: #30363d; }
+    }
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .t   { font-size: 15px; font-weight: 600; }
+    .st  { font-size: 11.5px; }
+    .lbl { font-size: 12px; }
+    .val { font-size: 12px; font-weight: 600; }
+    .tick{ font-size: 10.5px; }
+
+    .bar { transform-origin: left center; animation: grow .9s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    .ln { stroke-dasharray: 1200; stroke-dashoffset: 1200;
+          animation: draw 1.6s ease-out forwards; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+
+    .fade { opacity: 0; animation: fade .5s ease-out forwards; }
+    @keyframes fade { to { opacity: 1; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bar, .ln, .fade { animation: none; opacity: 1;
+                         stroke-dashoffset: 0; transform: none; }
+    }
+  </style>
+  <text x="24.0" y="30.0" class="t fg" text-anchor="start">KV cache vs model weights — Llama-3-8B (GQA)</text>
+  <text x="24.0" y="50.0" class="st mut" text-anchor="start">At long context and moderate batch, the cache exceeds the model. It, not the weights,</text>
+  <text x="24.0" y="66.0" class="st mut" text-anchor="start">is what limits how many concurrent requests you can serve.</text>
+  <line x1="80" y1="229.6" x2="640" y2="229.6" class="rule"/>
+  <text x="646.0" y="233.6" class="tick" text-anchor="start" fill="#f43f5e">weights 16 GB</text>
+  <line x1="80" y1="250" x2="640" y2="250" class="axis"/>
+  <line x1="80" y1="250.0" x2="640" y2="250.0" class="grid"/>
+  <text x="70.0" y="254.0" class="tick mut" text-anchor="end">0</text>
+  <line x1="80" y1="199.1" x2="640" y2="199.1" class="grid"/>
+  <text x="70.0" y="203.1" class="tick mut" text-anchor="end">40</text>
+  <line x1="80" y1="148.1" x2="640" y2="148.1" class="grid"/>
+  <text x="70.0" y="152.1" class="tick mut" text-anchor="end">80</text>
+  <line x1="80" y1="97.2" x2="640" y2="97.2" class="grid"/>
+  <text x="70.0" y="101.2" class="tick mut" text-anchor="end">120</text>
+  <text x="70.0" y="92.0" class="tick mut" text-anchor="end">GB</text>
+  <rect x="119.3" y="249.3" width="30" height="0.7" fill="#14b8a6" rx="2" class="bar" style="transform-origin:119.3px 250px; animation-delay:0.00s"/>
+  <rect x="155.3" y="244.5" width="30" height="5.5" fill="#3b82f6" rx="2" class="bar" style="transform-origin:155.3px 250px; animation-delay:0.07s"/>
+  <text x="170.3" y="237.5" class="tick fg" text-anchor="middle">4</text>
+  <rect x="191.3" y="228.1" width="30" height="21.9" fill="#a855f7" rx="2" class="bar" style="transform-origin:191.3px 250px; animation-delay:0.14s"/>
+  <text x="206.3" y="221.1" class="tick fg" text-anchor="middle">17</text>
+  <text x="173.3" y="270.0" class="lbl fg" text-anchor="middle">4k context</text>
+  <rect x="306.0" y="248.6" width="30" height="1.4" fill="#14b8a6" rx="2" class="bar" style="transform-origin:306.0px 250px; animation-delay:0.21s"/>
+  <text x="321.0" y="241.6" class="tick fg" text-anchor="middle">1</text>
+  <rect x="342.0" y="239.1" width="30" height="10.9" fill="#3b82f6" rx="2" class="bar" style="transform-origin:342.0px 250px; animation-delay:0.28s"/>
+  <text x="357.0" y="232.1" class="tick fg" text-anchor="middle">9</text>
+  <rect x="378.0" y="206.2" width="30" height="43.8" fill="#a855f7" rx="2" class="bar" style="transform-origin:378.0px 250px; animation-delay:0.35s"/>
+  <text x="393.0" y="199.2" class="tick fg" text-anchor="middle">34</text>
+  <text x="360.0" y="270.0" class="lbl fg" text-anchor="middle">8k context</text>
+  <rect x="492.7" y="244.5" width="30" height="5.5" fill="#14b8a6" rx="2" class="bar" style="transform-origin:492.7px 250px; animation-delay:0.42s"/>
+  <text x="507.7" y="237.5" class="tick fg" text-anchor="middle">4</text>
+  <rect x="528.7" y="206.2" width="30" height="43.8" fill="#3b82f6" rx="2" class="bar" style="transform-origin:528.7px 250px; animation-delay:0.49s"/>
+  <text x="543.7" y="199.2" class="tick fg" text-anchor="middle">34</text>
+  <rect x="564.7" y="75.0" width="30" height="175.0" fill="#a855f7" rx="2" class="bar" style="transform-origin:564.7px 250px; animation-delay:0.56s"/>
+  <text x="579.7" y="68.0" class="tick fg" text-anchor="middle">137</text>
+  <text x="546.7" y="270.0" class="lbl fg" text-anchor="middle">32k context</text>
+  <rect x="80" y="298" width="11" height="11" fill="#14b8a6" rx="2"/>
+  <text x="97.0" y="308.0" class="tick mut" text-anchor="start">batch 1</text>
+  <rect x="170" y="298" width="11" height="11" fill="#3b82f6" rx="2"/>
+  <text x="187.0" y="308.0" class="tick mut" text-anchor="start">batch 8</text>
+  <rect x="260" y="298" width="11" height="11" fill="#a855f7" rx="2"/>
+  <text x="277.0" y="308.0" class="tick mut" text-anchor="start">batch 32</text>
+</svg>
