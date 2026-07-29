@@ -148,7 +148,16 @@ def test_runner_result_serialises():
 # Rendering
 # ---------------------------------------------------------------------------
 
+# markdown-it-py ships in the [study] extra. On a minimal `pip install -e ".[dev]"`
+# these skip rather than fail — a contributor running the fast suite should not
+# see red for a feature they did not install. CI installs [study], so they run there.
+needs_markdown = pytest.mark.skipif(
+    not render.markdown_available(),
+    reason='needs markdown-it-py: pip install -e ".[study]"',
+)
 
+
+@needs_markdown
 def test_markdown_renders_to_html():
     html = render.render_note("# Title\n\nSome **bold** text.\n", "01-hands-on-ml-geron")
     assert "<h1>" in html or "Title" in html
@@ -161,6 +170,7 @@ def test_frontmatter_is_stripped():
     assert "book: X" not in html
 
 
+@needs_markdown
 def test_cross_book_links_become_in_app_routes():
     md = "See [A3](../../02-hands-on-llms-alammar/notes/ch03.md) for this.\n"
     html = render.render_note(md, "01-hands-on-ml-geron")
@@ -168,17 +178,20 @@ def test_cross_book_links_become_in_app_routes():
     assert ".md" not in html
 
 
+@needs_markdown
 def test_same_book_links_become_in_app_routes():
     html = render.render_note("Back to [ch7](ch07.md).\n", "04-ai-engineering-huyen")
     assert "#/read/04-ai-engineering-huyen/7" in html
 
 
+@needs_markdown
 def test_diagram_paths_are_rewritten_to_the_app_mount():
     md = "![a diagram](../../../assets/kv-cache.svg)\n"
     html = render.render_note(md, "02-hands-on-llms-alammar")
     assert 'src="/assets/kv-cache.svg"' in html
 
 
+@needs_markdown
 def test_tables_render_as_tables():
     md = "| a | b |\n|---|---|\n| 1 | 2 |\n"
     assert "<table>" in render.render_note(md, "x")

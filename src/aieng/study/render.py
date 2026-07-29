@@ -38,7 +38,7 @@ def _fallback(md_text: str) -> str:
     Readable rather than pretty — better than showing the reader a stack trace
     or raw markdown.
     """
-    return f"<pre class='raw-md'>{html.escape(md_text)}</pre>"
+    return f"<pre class='raw-md'>{html.escape(_strip_frontmatter(md_text))}</pre>"
 
 
 def render_note(md_text: str, book_slug: str) -> str:
