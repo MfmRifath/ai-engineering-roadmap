@@ -159,6 +159,7 @@ p2 is deliberate — the books you cannot commit become the corpus you retrieve 
 ├── notebooks/            one runnable notebook per phase
 ├── cheatsheets/          one-page references
 ├── flashcards/           Anki-importable deck, generated from notes
+├── assets/               diagrams — generated charts + animated SVGs
 ├── resources/            papers, courses, glossary
 ├── scripts/              toc extraction, progress, flashcards, scaffolding
 └── library/              your PDFs — gitignored, never committed
@@ -200,6 +201,7 @@ between having read something and knowing it.
 | `make toc` | Re-extract chapter maps from `library/*.pdf` |
 | `make progress` | Rebuild PROGRESS.md and the bar above |
 | `make cards` | Rebuild the Anki deck from note flashcards |
+| `make diagrams` | Regenerate the data-driven chart SVGs in `assets/` |
 | `make note BOOK=… CH=…` | Scaffold a chapter note |
 | `make check` | Everything CI runs |
 

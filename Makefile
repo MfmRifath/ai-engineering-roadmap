@@ -4,7 +4,7 @@
 PY ?= python
 
 .DEFAULT_GOAL := help
-.PHONY: help setup setup-all test test-all lint fmt toc progress cards note clean check
+.PHONY: help setup setup-all test test-all lint fmt toc progress cards diagrams note clean check
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -39,10 +39,14 @@ progress: ## Recompute PROGRESS.md and the README progress bar from ROADMAP.md
 cards: ## Rebuild the Anki-importable flashcard deck from the notes
 	$(PY) scripts/build_flashcards.py
 
+diagrams: ## Regenerate the data-driven chart SVGs in assets/
+	$(PY) scripts/build_diagrams.py
+
 note: ## Scaffold a chapter note: make note BOOK=04-ai-engineering-huyen CH=3
 	$(PY) scripts/new_note.py --book $(BOOK) --chapter $(CH)
 
 check: lint test progress ## What CI runs
+	$(PY) scripts/build_diagrams.py --check
 
 clean: ## Remove caches and build artifacts
 	rm -rf .pytest_cache .ruff_cache .mypy_cache build dist *.egg-info src/*.egg-info

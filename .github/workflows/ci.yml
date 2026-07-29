@@ -80,3 +80,8 @@ jobs:
           python-version: "3.11"
       - name: Check PROGRESS.md matches ROADMAP.md
         run: python scripts/build_progress.py --check
+
+      - name: Check generated diagrams match the code they chart
+        run: |
+          pip install -e .
+          python scripts/build_diagrams.py --check

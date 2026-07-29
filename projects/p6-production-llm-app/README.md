@@ -74,12 +74,26 @@ model demonstrably lacks what it needs. Most quality problems are context proble
 
 ## The loop that makes it improve
 
-```
-production run → full trace → outcome (environmental or human)
-   → failures become eval cases
-   → corrections become memories
-   → patterns become prompt revisions
-   → re-run the eval suite → deploy
+```mermaid
+flowchart LR
+    RUN["production run"] --> TR["full trace<br/><small>prompt + model version,<br/>chunks, tool calls, cost</small>"]
+    TR --> OUT{"outcome"}
+    OUT -- "environmental<br/><small>tests passed, API 200</small>" --> SIG["signal"]
+    OUT -- "human<br/><small>correction, rating</small>" --> SIG
+    SIG --> EV["failures → eval cases"]
+    SIG --> MEM["corrections → memories"]
+    SIG --> PR["patterns → prompt revisions"]
+    EV --> SUITE["re-run the eval suite"]
+    MEM --> SUITE
+    PR --> SUITE
+    SUITE --> DEP["deploy"] --> RUN
+
+    classDef obs fill:#3b82f6,stroke:#3b82f6,color:#fff,stroke-width:0px
+    classDef act fill:#a855f7,stroke:#a855f7,color:#fff,stroke-width:0px
+    classDef gd  fill:#22c55e,stroke:#22c55e,color:#fff,stroke-width:0px
+    class TR obs
+    class EV,MEM,PR act
+    class SUITE,DEP gd
 ```
 
 Without this an app does not get better, it just gets older. Building it is what

@@ -19,15 +19,41 @@ the measurement, and this project is structured to force that:
 
 ## Spec
 
+```mermaid
+flowchart TB
+    subgraph offline ["Ingest — once"]
+        PDF["library/*.pdf<br/><small>gitignored, stays local</small>"]
+        TXT["extract text per page<br/><small>keep page numbers for citations</small>"]
+        CH["chunk<br/><small>size + overlap — SWEEP THESE</small>"]
+        EM["embed<br/><small>passage: prefix</small>"]
+        IX[("index")]
+        PDF --> TXT --> CH --> EM --> IX
+    end
+
+    subgraph online ["Query — per request"]
+        Q["question"]
+        DE["dense search"]
+        BM["BM25"]
+        RRF{{"RRF fusion"}}
+        RE["cross-encoder rerank<br/><small>top ~50 → top 3–5</small>"]
+        GEN["generate<br/><small>book · chapter · page</small>"]
+        Q --> DE --> RRF
+        Q --> BM --> RRF
+        RRF --> RE --> GEN
+    end
+
+    IX -.-> DE
+
+    classDef hot fill:#f43f5e,stroke:#f43f5e,color:#fff,stroke-width:0px
+    classDef acc fill:#3b82f6,stroke:#3b82f6,color:#fff,stroke-width:0px
+    classDef win fill:#22c55e,stroke:#22c55e,color:#fff,stroke-width:0px
+    class CH hot
+    class RE acc
+    class GEN win
 ```
-library/*.pdf
-   └─► extract text (per page, keep page numbers for citations)
-       └─► chunk (size + overlap are hyperparameters — sweep them)
-           └─► embed (a retrieval model, with the right query/passage prefixes)
-               └─► index
-query ─► embed ─► dense search ─┐
-      └────────► BM25 search ───┴─► RRF ─► rerank ─► top 3-5 ─► prompt ─► answer + citations
-```
+
+The two red/blue nodes are where the quality is: **chunking**, the hyperparameter almost
+nobody sweeps, and **reranking**, the cheapest large win and the one most often skipped.
 
 ## Definition of done
 

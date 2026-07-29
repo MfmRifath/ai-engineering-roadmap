@@ -52,6 +52,23 @@ model. Say what replaced it.
 
 **`[framework-specific]`** marks material tied to a library that will churn.
 
+## Diagram conventions
+
+Flowcharts go inline as ```` ```mermaid ```` blocks — they render natively on GitHub, diff
+cleanly, and need no build step. Reach for an SVG in [`assets/`](assets/) only when motion
+or precise layout carries information a flowchart cannot.
+
+The four charts in `assets/` ending in memory, reliability, floor, and weights are
+**generated** from `aieng.serving.budget` — edit the script, not the SVG:
+
+```bash
+make diagrams
+```
+
+Anything hand-written in `assets/` must work in both GitHub themes, respect
+`prefers-reduced-motion`, and carry `<title>` and `<desc>`. See
+[assets/README.md](assets/README.md); `tests/test_assets.py` enforces all of it.
+
 ## Code conventions
 
 ```bash
