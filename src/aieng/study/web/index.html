@@ -19,7 +19,9 @@
   </div>
   <nav id="nav">
     <button data-view="dashboard" class="active">Dashboard</button>
+    <button data-view="read">Read</button>
     <button data-view="review">Review <span class="badge" id="due-badge">0</span></button>
+    <button data-view="code">Code</button>
     <button data-view="exercises">Exercises</button>
     <button data-view="graph">Graph</button>
   </nav>
@@ -80,6 +82,77 @@
   <p class="hint center">Grade honestly. The schedule is only as good as the signal you give it.</p>
 </section>
 
+
+<!-- ───────────────────────────── READ ────────────────────────────── -->
+<section id="view-read" class="view">
+  <div id="read-index" class="panel">
+    <h2>Chapters <span class="hint">read them here, in order</span></h2>
+    <div id="library"></div>
+  </div>
+
+  <div id="read-note" class="hidden">
+    <div class="reader-bar">
+      <button id="read-back" class="ghost">&larr; All chapters</button>
+      <span class="spacer"></span>
+      <label class="donebox"><input type="checkbox" id="read-done"> mark chapter done</label>
+    </div>
+    <div class="reader-layout">
+      <article id="note-body" class="panel prose"></article>
+      <aside id="note-toc" class="toc"></aside>
+    </div>
+    <div class="reader-nav">
+      <button id="read-prev" class="ghost"></button>
+      <span class="spacer"></span>
+      <button id="read-next" class="ghost"></button>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────────── CODE ────────────────────────────── -->
+<section id="view-code" class="view">
+  <div id="code-index" class="panel">
+    <h2>Coding challenges <span class="hint">write it, run it, the assertions decide</span></h2>
+    <p class="hint" style="margin-top:-8px">
+      No model grades these. Your code runs locally against real assertions — the same
+      functions you will meet again in <code>src/aieng/</code>.
+    </p>
+    <div id="challenge-list"></div>
+  </div>
+
+  <div id="code-work" class="hidden">
+    <div class="reader-bar">
+      <button id="code-back" class="ghost">&larr; All challenges</button>
+      <span class="spacer"></span>
+      <span id="code-meta" class="hint"></span>
+    </div>
+
+    <div class="code-layout">
+      <div class="panel">
+        <h2 id="code-title"></h2>
+        <div id="code-prompt" class="prose small"></div>
+        <div id="code-tests"></div>
+        <div class="hint" id="code-hidden-note"></div>
+        <details id="code-hints"><summary>Hints</summary><div id="code-hints-body"></div></details>
+        <details id="code-solution-wrap">
+          <summary>Show a reference solution</summary>
+          <pre id="code-solution" class="test-output"></pre>
+        </details>
+      </div>
+
+      <div class="panel editor-panel">
+        <div class="editor-bar">
+          <span class="hint">solution.py</span>
+          <span class="spacer"></span>
+          <button id="code-reset" class="ghost">Reset</button>
+          <button id="code-run" class="primary">Run <kbd>ctrl+enter</kbd></button>
+        </div>
+        <textarea id="editor" spellcheck="false" autocapitalize="off" autocorrect="off"></textarea>
+        <div id="run-results"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ─────────────────────────── EXERCISES ─────────────────────────── -->
 <section id="view-exercises" class="view">
   <div class="panel">
@@ -116,5 +189,6 @@
 </main>
 
 <script src="/static/app.js"></script>
+<script src="/static/learn.js"></script>
 </body>
 </html>

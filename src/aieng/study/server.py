@@ -22,7 +22,8 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from aieng.study import content, srs
+from aieng.study import challenges, content, render, srs
+from aieng.study.runner import run_challenge, run_scratch
 from aieng.study.store import Store
 
 try:
@@ -53,6 +54,10 @@ class ToggleIn(BaseModel):
 class ExerciseIn(BaseModel):
     done: bool
     notes: str = ""
+
+
+class CodeIn(BaseModel):
+    code: str
 
 
 # ---------------------------------------------------------------------------
@@ -336,6 +341,167 @@ def graph() -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
+# Reading
+# ---------------------------------------------------------------------------
+
+
+@app.get("/api/read/{book}/{chapter}")
+def read_note(book: str, chapter: int) -> dict[str, Any]:
+    """A chapter, rendered to HTML, with its neighbours for prev/next."""
+    note = content.note_by_key(f"{book}/{chapter}")
+    if note is None:
+        raise HTTPException(404, f"no note {book}/{chapter}")
+
+    md_text = note.path.read_text(encoding="utf-8")
+    ordered = [n for n in content.all_notes() if n.book_slug == book]
+    ordered.sort(key=lambda n: n.chapter)
+    idx = next((i for i, n in enumerate(ordered) if n.chapter == chapter), 0)
+
+    code = _code_by_key(content.load_roadmap()).get(note.key, "")
+    done = {t.code for p in content.load_roadmap() for t in p.tasks if t.done}
+
+    return {
+        "key": note.key,
+        "code": code,
+        "done": code in done,
+        "title": note.title,
+        "book": note.book_slug,
+        "book_label": note.book_label,
+        "book_title": note.book_title,
+        "chapter": note.chapter,
+        "difficulty": note.difficulty,
+        "est_hours": note.est_hours,
+        "tags": note.tags,
+        "path": note.rel_path,
+        "html": render.render_note(md_text, book),
+        "toc": render.note_toc(md_text),
+        "cards": len(note.cards),
+        "exercises": len(note.exercises),
+        "prev": (
+            {
+                "book": ordered[idx - 1].book_slug,
+                "chapter": ordered[idx - 1].chapter,
+                "title": ordered[idx - 1].title,
+            }
+            if idx > 0
+            else None
+        ),
+        "next": (
+            {
+                "book": ordered[idx + 1].book_slug,
+                "chapter": ordered[idx + 1].chapter,
+                "title": ordered[idx + 1].title,
+            }
+            if idx < len(ordered) - 1
+            else None
+        ),
+        "renderer": "markdown-it" if render.markdown_available() else "plain",
+    }
+
+
+@app.get("/api/library")
+def library() -> dict[str, Any]:
+    """Every chapter, grouped by book — the reader's table of contents."""
+    phases = content.load_roadmap()
+    codes = _code_by_key(phases)
+    done = {t.code for p in phases for t in p.tasks if t.done}
+
+    books: dict[str, dict] = {}
+    for note in content.all_notes():
+        b = books.setdefault(
+            note.book_slug,
+            {
+                "slug": note.book_slug,
+                "label": note.book_label,
+                "title": note.book_title,
+                "chapters": [],
+            },
+        )
+        b["chapters"].append(
+            {
+                "chapter": note.chapter,
+                "title": note.title,
+                "code": codes.get(note.key, ""),
+                "done": codes.get(note.key, "") in done,
+                "difficulty": note.difficulty,
+                "est_hours": note.est_hours,
+                "cards": len(note.cards),
+            }
+        )
+    for b in books.values():
+        b["chapters"].sort(key=lambda c: c["chapter"])
+    return {"books": [books[k] for k in sorted(books)]}
+
+
+# ---------------------------------------------------------------------------
+# Coding challenges
+# ---------------------------------------------------------------------------
+
+
+@app.get("/api/challenges")
+def list_challenges() -> dict[str, Any]:
+    done = store.exercise_done()
+    items = challenges.summary()
+    for item in items:
+        item["done"] = f"challenge:{item['id']}" in done
+    return {"challenges": items}
+
+
+@app.get("/api/challenges/{challenge_id}")
+def get_challenge(challenge_id: str) -> dict[str, Any]:
+    c = challenges.get(challenge_id)
+    if c is None:
+        raise HTTPException(404, f"no challenge {challenge_id}")
+    return {
+        "id": c.id,
+        "title": c.title,
+        "phase": c.phase,
+        "book": c.book,
+        "difficulty": c.difficulty,
+        "prompt": c.prompt,
+        "starter": c.starter,
+        "hints": c.hints,
+        # Visible tests only. The hidden ones exist so that returning the
+        # expected value instead of implementing the function does not pass.
+        "tests": [{"name": t.name, "code": t.code} for t in c.visible_tests],
+        "hidden_count": len(c.tests) - len(c.visible_tests),
+        "done": f"challenge:{c.id}" in store.exercise_done(),
+    }
+
+
+@app.get("/api/challenges/{challenge_id}/solution")
+def challenge_solution(challenge_id: str) -> dict[str, Any]:
+    c = challenges.get(challenge_id)
+    if c is None:
+        raise HTTPException(404, f"no challenge {challenge_id}")
+    return {"id": c.id, "solution": c.solution}
+
+
+@app.post("/api/challenges/{challenge_id}/run")
+def run_challenge_code(challenge_id: str, body: CodeIn) -> dict[str, Any]:
+    """Execute the submitted solution against the challenge's assertions.
+
+    This runs Python on your machine with your permissions, like a notebook.
+    The server binds to localhost only; see runner.py for what is and is not
+    guaranteed.
+    """
+    c = challenges.get(challenge_id)
+    if c is None:
+        raise HTTPException(404, f"no challenge {challenge_id}")
+
+    result = run_challenge(body.code, c)
+    if result.ok:
+        store.set_exercise_done(f"challenge:{c.id}", True)
+    return result.to_dict()
+
+
+@app.post("/api/scratch/run")
+def run_scratch_code(body: CodeIn) -> dict[str, Any]:
+    """The scratchpad — run a snippet, see its output. No checks."""
+    return run_scratch(body.code).to_dict()
+
+
+# ---------------------------------------------------------------------------
 # Static UI
 # ---------------------------------------------------------------------------
 
@@ -353,6 +519,10 @@ def healthz() -> JSONResponse:
 if WEB.is_dir():
     app.mount("/static", StaticFiles(directory=WEB), name="static")
 
+_ASSETS = content.REPO_ROOT / "assets"
+if _ASSETS.is_dir():
+    app.mount("/assets", StaticFiles(directory=_ASSETS), name="assets")
+
 
 def main() -> int:
     import uvicorn
@@ -361,7 +531,9 @@ def main() -> int:
     c = len(content.all_cards())
     e = len(content.all_exercises())
     print("\n  AI Engineering Roadmap — study\n")
-    print(f"  {n} notes · {c} flashcards · {e} exercises · no LLM, no network")
+    ch = len(challenges.CHALLENGES)
+    print(f"  {n} notes · {c} flashcards · {e} exercises · {ch} coding challenges")
+    print("  no LLM, no network, no API keys")
     print("\n  http://127.0.0.1:8765\n")
     uvicorn.run(app, host="127.0.0.1", port=8765, log_level="warning")
     return 0

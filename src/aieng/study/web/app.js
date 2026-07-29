@@ -22,7 +22,10 @@ const md = (s) =>
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
     .replace(/(?<![*\w])\*([^*]+)\*(?!\w)/g, "<em>$1</em>");
 
-let state = { queue: [], idx: 0, revealed: false, dash: null, graph: null };
+let state = {
+  queue: [], idx: 0, revealed: false,
+  dash: null, graph: null, note: null, challenge: null,
+};
 
 /* ── navigation ──────────────────────────────────────────────────── */
 
@@ -34,6 +37,8 @@ function show(view) {
   $$("#nav button").forEach((b) => b.classList.toggle("active", b.dataset.view === view));
   $$(".view").forEach((v) => v.classList.toggle("active", v.id === `view-${view}`));
   if (view === "review" && !state.queue.length) loadQueue();
+  if (view === "read") loadLibrary();
+  if (view === "code") loadChallenges();
   if (view === "exercises") loadExercises();
   if (view === "graph") loadGraph();
 }
@@ -392,6 +397,8 @@ $("#graph-labels").addEventListener("change", () => {
 
 /* ── boot ────────────────────────────────────────────────────────── */
 
-loadDashboard().catch((e) => {
-  $("#subtitle").textContent = `could not load: ${e.message}`;
-});
+loadDashboard()
+  .then(() => typeof route === "function" && route())
+  .catch((e) => {
+    $("#subtitle").textContent = `could not load: ${e.message}`;
+  });

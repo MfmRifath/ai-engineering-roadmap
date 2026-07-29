@@ -114,10 +114,14 @@ make study                 # http://127.0.0.1:8765
 
 | | |
 |---|---|
+| **Read** | All 59 chapters rendered in-app — tables, diagrams, and cross-links that keep you inside the reader |
 | **Spaced repetition** | SM-2 over the 363 flashcards already written in the notes |
-| **Exercises** | The 513 Understand/Build items, tracked — with `pytest` as the grader for code tasks |
+| **Code** | 18 coding challenges with an in-app editor. Your Python runs against real assertions — no model grades anything |
+| **Exercises** | The 513 Understand/Build items, tracked, with `pytest` as the grader |
 | **Progress** | Ticking a chapter writes back to `ROADMAP.md`, so the app and the repo never disagree |
 | **Knowledge graph** | The 308 cross-links between chapters, laid out and explorable |
+
+The coding challenges are the curriculum's own ideas — stable softmax, causal masking, BPE merges, KV cache arithmetic, RRF, SM-2 — each with hidden tests, so returning the expected value instead of implementing the function does not pass.
 
 The markdown stays the single source of truth — the app reads your notes directly and
 never copies content into a database. Only your review history is stored, in a gitignored
