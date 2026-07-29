@@ -106,6 +106,12 @@ secrets.toml
 credentials.json
 
 # ---------------------------------------------------------------------------
+# Study app state — your review history. Personal, and the only thing here
+# that cannot be rebuilt from the repository.
+# ---------------------------------------------------------------------------
+.study/
+
+# ---------------------------------------------------------------------------
 # Experiment tracking
 # ---------------------------------------------------------------------------
 wandb/

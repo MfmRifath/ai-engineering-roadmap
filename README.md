@@ -99,6 +99,27 @@ The repo turns that overlap into a method:
 
 ---
 
+## The study app
+
+The repo is also a **local, offline study system**. No LLM, no API keys, no network —
+everything it shows is derived from the markdown you already have.
+
+```bash
+pip install -e ".[study]"
+make study                 # http://127.0.0.1:8765
+```
+
+| | |
+|---|---|
+| **Spaced repetition** | SM-2 over the 363 flashcards already written in the notes |
+| **Exercises** | The 513 Understand/Build items, tracked — with `pytest` as the grader for code tasks |
+| **Progress** | Ticking a chapter writes back to `ROADMAP.md`, so the app and the repo never disagree |
+| **Knowledge graph** | The 308 cross-links between chapters, laid out and explorable |
+
+The markdown stays the single source of truth — the app reads your notes directly and
+never copies content into a database. Only your review history is stored, in a gitignored
+`.study/study.db`. Delete it and you lose your schedule, nothing else.
+
 ## Getting started
 
 ```bash
@@ -154,6 +175,7 @@ p2 is deliberate — the books you cannot commit become the corpus you retrieve 
 │   ├── _toc/             chapter maps extracted from the real PDFs
 │   └── NN-slug/notes/    chapter notes — the bulk of the writing
 ├── src/aieng/            the library you build across the roadmap
+│   └── study/            the local study app — offline, no LLM
 ├── tests/                real assertions against the from-scratch code
 ├── projects/             six capstones
 ├── notebooks/            one runnable notebook per phase
@@ -201,6 +223,7 @@ between having read something and knowing it.
 | `make toc` | Re-extract chapter maps from `library/*.pdf` |
 | `make progress` | Rebuild PROGRESS.md and the bar above |
 | `make cards` | Rebuild the Anki deck from note flashcards |
+| `make study` | Launch the local study app (spaced repetition, exercises, graph) |
 | `make diagrams` | Regenerate the data-driven chart SVGs in `assets/` |
 | `make note BOOK=… CH=…` | Scaffold a chapter note |
 | `make check` | Everything CI runs |

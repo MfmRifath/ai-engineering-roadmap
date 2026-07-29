@@ -42,6 +42,9 @@ cards: ## Rebuild the Anki-importable flashcard deck from the notes
 diagrams: ## Regenerate the data-driven chart SVGs in assets/
 	$(PY) scripts/build_diagrams.py
 
+study: ## Launch the interactive study app at http://127.0.0.1:8765
+	$(PY) -m aieng.study
+
 note: ## Scaffold a chapter note: make note BOOK=04-ai-engineering-huyen CH=3
 	$(PY) scripts/new_note.py --book $(BOOK) --chapter $(CH)
 

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Engineering Roadmap — Study</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📕</text></svg>">
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="logo">▲</span>
+    <div>
+      <h1>AI Engineering Roadmap</h1>
+      <p class="sub" id="subtitle">loading…</p>
+    </div>
+  </div>
+  <nav id="nav">
+    <button data-view="dashboard" class="active">Dashboard</button>
+    <button data-view="review">Review <span class="badge" id="due-badge">0</span></button>
+    <button data-view="exercises">Exercises</button>
+    <button data-view="graph">Graph</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ─────────────────────────── DASHBOARD ─────────────────────────── -->
+<section id="view-dashboard" class="view active">
+  <div class="stats" id="stats"></div>
+
+  <div class="panel">
+    <h2>Review activity <span class="hint">last 30 days</span></h2>
+    <div id="heatmap" class="heatmap"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Progress <span class="hint">ticking a box writes to ROADMAP.md</span></h2>
+    <div id="phases"></div>
+  </div>
+</section>
+
+<!-- ──────────────────────────── REVIEW ───────────────────────────── -->
+<section id="view-review" class="view">
+  <div class="panel review-panel">
+    <div id="review-empty" class="empty hidden">
+      <h2>Nothing due</h2>
+      <p>Everything scheduled for today is done. Come back tomorrow, or study a new chapter to unlock more cards.</p>
+    </div>
+
+    <div id="review-card" class="hidden">
+      <div class="card-meta">
+        <span id="card-ref" class="tag"></span>
+        <span id="card-new" class="tag tag-new hidden">new</span>
+        <span id="card-lapses" class="tag tag-warn hidden"></span>
+        <span class="spacer"></span>
+        <span id="review-remaining" class="hint"></span>
+      </div>
+
+      <div class="q" id="card-question"></div>
+
+      <div id="card-answer-wrap" class="hidden">
+        <hr>
+        <div class="a" id="card-answer"></div>
+      </div>
+
+      <div class="actions">
+        <button id="show-answer" class="primary wide">Show answer <kbd>space</kbd></button>
+        <div id="grade-buttons" class="grades hidden">
+          <button data-grade="0" class="g-again">Again<small id="p-again"></small><kbd>1</kbd></button>
+          <button data-grade="3" class="g-hard">Hard<small id="p-hard"></small><kbd>2</kbd></button>
+          <button data-grade="4" class="g-good">Good<small id="p-good"></small><kbd>3</kbd></button>
+          <button data-grade="5" class="g-easy">Easy<small id="p-easy"></small><kbd>4</kbd></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="hint center">Grade honestly. The schedule is only as good as the signal you give it.</p>
+</section>
+
+<!-- ─────────────────────────── EXERCISES ─────────────────────────── -->
+<section id="view-exercises" class="view">
+  <div class="panel">
+    <h2>Exercises</h2>
+    <div class="filters">
+      <select id="ex-book"><option value="">All books</option></select>
+      <select id="ex-kind">
+        <option value="">Understand + Build</option>
+        <option value="understand">Understand</option>
+        <option value="build">Build</option>
+      </select>
+      <span class="spacer"></span>
+      <button id="run-tests" class="ghost">Run test suite</button>
+    </div>
+    <pre id="test-output" class="test-output hidden"></pre>
+    <div id="exercise-list"></div>
+  </div>
+</section>
+
+<!-- ───────────────────────────── GRAPH ───────────────────────────── -->
+<section id="view-graph" class="view">
+  <div class="panel">
+    <h2>Knowledge graph <span class="hint">every cross-link between chapters</span></h2>
+    <div class="filters">
+      <label><input type="checkbox" id="graph-labels" checked> labels</label>
+      <span class="spacer"></span>
+      <span class="hint" id="graph-stats"></span>
+    </div>
+    <svg id="graph-svg"></svg>
+    <div id="graph-detail" class="graph-detail hidden"></div>
+  </div>
+</section>
+
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

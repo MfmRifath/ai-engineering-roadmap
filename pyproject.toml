@@ -64,14 +64,21 @@ agents = [
     "anthropic>=0.34",
     "openai>=1.30",
 ]
+# The interactive study app — local, offline, no LLM
+study = [
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "pydantic>=2.6",
+]
 dev = [
     "pytest>=8.0",
+    "httpx>=0.27",          # fastapi TestClient
     "pytest-cov>=5.0",
     "ruff>=0.5",
     "nbstripout>=0.7",
 ]
 all = [
-    "aieng[classic,llm,finetune,rag,serving,agents,dev]",
+    "aieng[classic,llm,finetune,rag,serving,agents,study,dev]",
 ]
 
 [project.urls]
@@ -80,12 +87,13 @@ Roadmap = "https://github.com/MfmRifath/ai-engineering-roadmap/blob/main/ROADMAP
 
 [project.scripts]
 aieng-progress = "aieng.cli:progress_main"
+aieng-study = "aieng.study.server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-aieng = ["py.typed"]
+aieng = ["py.typed", "study/web/*"]
 
 # ---------------------------------------------------------------------------
 # Tooling
