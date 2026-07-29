@@ -286,3 +286,50 @@ def test_solution_endpoint(client):
 def test_scratch_endpoint(client):
     r = client.post("/api/scratch/run", json={"code": "print(6*7)"}).json()
     assert r["ok"] and "42" in r["stdout"]
+
+
+# ---------------------------------------------------------------------------
+# The one endpoint that writes to the repository
+# ---------------------------------------------------------------------------
+
+
+def test_toggling_a_chapter_round_trips_through_roadmap_md():
+    """`set_task_done` edits the real ROADMAP.md, which is the whole point —
+    the app and the repo must never hold different ideas of your progress.
+
+    That also makes it the one function a careless test could use to mutate the
+    working tree, so this restores the original bytes in a finally block and
+    asserts they came back.
+    """
+    from aieng.study import content
+
+    roadmap = content.REPO_ROOT / "ROADMAP.md"
+    original = roadmap.read_bytes()
+
+    try:
+        phases = content.load_roadmap()
+        code = phases[0].tasks[0].code
+        assert not phases[0].tasks[0].done, "expected a clean roadmap"
+
+        assert content.set_task_done(code, True) is True
+        reloaded = {t.code: t.done for p in content.load_roadmap() for t in p.tasks}
+        assert reloaded[code] is True
+        # Exactly one box moved.
+        assert sum(reloaded.values()) == 1
+
+        assert content.set_task_done(code, False) is True
+        assert not any(t.done for p in content.load_roadmap() for t in p.tasks)
+    finally:
+        roadmap.write_bytes(original)
+        content._notes_cached.cache_clear()
+
+    assert roadmap.read_bytes() == original, "ROADMAP.md was not restored"
+
+
+def test_toggling_an_unknown_chapter_changes_nothing():
+    from aieng.study import content
+
+    roadmap = content.REPO_ROOT / "ROADMAP.md"
+    before = roadmap.read_bytes()
+    assert content.set_task_done("ZZ99", True) is False
+    assert roadmap.read_bytes() == before
