@@ -72,9 +72,14 @@ Anything hand-written in `assets/` must work in both GitHub themes, respect
 ## Code conventions
 
 ```bash
+python3 -m venv .venv && source .venv/bin/activate
 make setup      # install + dev tools
 make check      # what CI runs: lint, format, tests, progress freshness
 ```
+
+`make` resolves `python3` before `python`, and prefers an activated virtualenv —
+macOS and most Linux distributions have no bare `python`. `make python` shows what
+it picked; `make setup PY=/path/to/python` overrides it.
 
 - Ruff for lint and format, 100 columns. **Markdown is excluded** — the Python
   snippets in the notes are hand-formatted for reading, and reflowing them makes

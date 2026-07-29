@@ -1,14 +1,23 @@
 # AI Engineering Roadmap — common tasks
-# Windows users: run these under Git Bash, or invoke the python commands directly.
+#
+# Windows: run these under Git Bash, or invoke the python commands directly.
+#
+# macOS and most Linux distributions ship no bare `python`, only `python3`,
+# so hard-coding `python` breaks make for everyone not on Windows. An
+# activated virtualenv is picked up for free, since it puts its own python3
+# first on PATH.  Override with:  make study PY=/path/to/python
 
-PY ?= python
+PY ?= $(shell command -v python3 2>/dev/null || command -v python 2>/dev/null || echo python3)
 
 .DEFAULT_GOAL := help
-.PHONY: help setup setup-all test test-all lint fmt toc progress cards diagrams note clean check
+.PHONY: help python setup setup-all test test-all lint fmt toc progress cards diagrams study note clean check
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
+
+python: ## Show which interpreter make will use
+	@$(PY) -c "import sys; print(sys.executable); print(sys.version)"
 
 setup: ## Install the package + dev tools (fast, no torch)
 	$(PY) -m pip install -e ".[dev]"

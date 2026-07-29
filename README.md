@@ -105,9 +105,12 @@ The repo is also a **local, offline study system**. No LLM, no API keys, no netw
 everything it shows is derived from the markdown you already have.
 
 ```bash
+python3 -m venv .venv && source .venv/bin/activate    # Windows: .venv\Scripts\activate
 pip install -e ".[study]"
 make study                 # http://127.0.0.1:8765
 ```
+
+<sub>No `make`? Run `python3 -m aieng.study` directly. `make python` prints the interpreter it resolved.</sub>
 
 | | |
 |---|---|
@@ -227,6 +230,7 @@ between having read something and knowing it.
 | `make diagrams` | Regenerate the data-driven chart SVGs in `assets/` |
 | `make note BOOK=… CH=…` | Scaffold a chapter note |
 | `make check` | Everything CI runs |
+| `make python` | Show which interpreter `make` resolved |
 
 ---
 
