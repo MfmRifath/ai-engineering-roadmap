@@ -10,7 +10,7 @@
 PY ?= $(shell command -v python3 2>/dev/null || command -v python 2>/dev/null || echo python3)
 
 .DEFAULT_GOAL := help
-.PHONY: help python setup setup-all test test-all lint fmt toc progress cards diagrams study note clean check
+.PHONY: help python doctor setup setup-all test test-all lint fmt toc progress cards diagrams study note clean check
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -19,7 +19,11 @@ help: ## Show this help
 python: ## Show which interpreter make will use
 	@$(PY) -c "import sys; print(sys.executable); print(sys.version)"
 
+doctor: ## Diagnose the environment and print what to run next
+	@$(PY) scripts/doctor.py
+
 setup: ## Install the package + dev tools (fast, no torch)
+	@$(PY) scripts/doctor.py --probe
 	$(PY) -m pip install -e ".[dev]"
 
 setup-all: ## Install everything, including torch and transformers (slow)

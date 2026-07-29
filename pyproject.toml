@@ -119,6 +119,10 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["B011"]
+# doctor.py deliberately checks the running interpreter's version. Ruff sees a
+# comparison against the project's minimum and calls it dead code — but this is
+# the one script whose entire job is to run on the *wrong* interpreter and say so.
+"scripts/doctor.py" = ["UP036"]
 "scripts/*" = ["C4"]
 
 [tool.ruff.format]

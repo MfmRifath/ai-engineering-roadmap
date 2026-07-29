@@ -144,6 +144,27 @@ Then put your book PDFs in `library/` and:
 make toc                           # verify your editions match the notes
 ```
 
+### If setup fails
+
+```bash
+make doctor        # or: python3 scripts/doctor.py
+```
+
+It reports your interpreter, whether `pip`/`venv`/`aieng` are present, and prints
+the exact commands to run next.
+
+**Debian, Ubuntu, or WSL** ship Python with `venv` and `pip` split into separate
+packages, so `python3 -m venv` fails with *"ensurepip is not available"*:
+
+```bash
+sudo apt update
+sudo apt install -y python3-venv python3-pip
+```
+
+**No `make`?** Every target is a one-line python command — `python3 -m aieng.study`,
+`python3 scripts/build_progress.py`, and so on. `make python` shows which interpreter
+`make` resolved.
+
 **Your first week:** read [ROADMAP.md](ROADMAP.md), open
 [Géron ch. 1](books/01-hands-on-ml-geron/notes/ch01.md), and start ticking boxes.
 
@@ -231,6 +252,7 @@ between having read something and knowing it.
 | `make note BOOK=… CH=…` | Scaffold a chapter note |
 | `make check` | Everything CI runs |
 | `make python` | Show which interpreter `make` resolved |
+| `make doctor` | Diagnose the environment and print what to run next |
 
 ---
 

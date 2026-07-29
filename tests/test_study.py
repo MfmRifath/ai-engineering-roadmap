@@ -375,3 +375,58 @@ def test_note_detail(client):
 
 def test_note_detail_404(client):
     assert client.get("/api/notes/nope/1").status_code == 404
+
+
+# ---------------------------------------------------------------------------
+# scripts/doctor.py — must survive a broken environment, since that is when
+# it gets run. These fake the failure modes that actually happened: Debian
+# without python3-venv, and a machine with no pip at all.
+# ---------------------------------------------------------------------------
+
+
+def _run_doctor(*args: str):
+    import subprocess
+    import sys
+
+    return subprocess.run(
+        [sys.executable, str(content.REPO_ROOT / "scripts" / "doctor.py"), *args],
+        capture_output=True,
+        text=True,
+        cwd=content.REPO_ROOT,
+        timeout=60,
+    )
+
+
+def test_doctor_runs_and_reports_the_interpreter():
+    r = _run_doctor()
+    assert r.returncode == 0, r.stderr
+    assert "environment check" in r.stdout
+    assert "python" in r.stdout
+
+
+def test_doctor_output_is_ascii():
+    """The Windows console is cp1252 — a stray em-dash renders as a mojibake box."""
+    r = _run_doctor()
+    r.stdout.encode("ascii")  # raises if the doctor emits anything exotic
+
+
+def test_doctor_advice_is_not_self_contradictory():
+    """It must not say everything is installed and then tell you to install it."""
+    r = _run_doctor()
+    if "Everything the study app needs is already installed" in r.stdout:
+        assert "pip install" not in r.stdout
+        assert "venv" not in r.stdout.split("next")[-1]
+
+
+def test_doctor_probe_passes_when_pip_exists():
+    assert _run_doctor("--probe").returncode == 0
+
+
+def test_doctor_names_the_right_interpreter_for_the_platform():
+    import platform
+
+    r = _run_doctor()
+    expected = (
+        "python -m aieng.study" if platform.system() == "Windows" else "python3 -m aieng.study"
+    )
+    assert expected in r.stdout or "make study" in r.stdout
